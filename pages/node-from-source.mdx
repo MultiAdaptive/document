@@ -1,0 +1,120 @@
+# 从源码构建节点
+
+## 环境配置
+
+| Dependency                                                    | Version  | Version Check Command |
+| ------------------------------------------------------------- | -------- | --------------------- |
+| [git](https://git-scm.com/)                                   | `^2`     | `git --version`       |
+| [go](https://go.dev/)                                         | `^1.21`  | `go version`          |
+| [node](https://nodejs.org/en/)                                | `^20`    | `node --version`      |
+| [pnpm](https://pnpm.io/installation)                          | `^8`     | `pnpm --version`      |
+| [foundry](https://github.com/foundry-rs/foundry#installation) | `^0.2.0` | `forge --version`     |
+| [make](https://linux.die.net/man/1/make)                      | `^4`     | `make --version`      |
+
+## Build Domicon
+
+### Build the Optimism Monorepo
+
+<Steps>
+
+{<h3>克隆 Domicon</h3>}
+
+```bash
+cd ~
+git clone https://github.com/domicon-labs/domicon.git
+```
+
+{<h3>进入 Domicon</h3>}
+
+```bash
+cd domicon
+```
+
+{<h3>切换正确的分支</h3>}
+
+```bash
+git checkout domicon
+```
+
+{<h3>检查依赖项</h3>}
+
+运行以下脚本并仔细检查是否安装了所有必需的版本。如果未安装正确的版本，则可能会遇到意外错误。
+
+```bash
+./packages/contracts-bedrock/scripts/getting-started/versions.sh
+```
+
+{<h3>安装依赖项</h3>}
+
+```bash
+pnpm install
+```
+
+{<h3>构建domicon中的各种软件包</h3>}
+
+```bash
+make op-node
+pnpm build
+```
+
+</Steps>
+
+### 构建 `op-geth`
+
+<Steps>
+
+    {<h3>克隆 op-geth</h3>}
+
+    ```bash
+    cd ~
+    git clone https://github.com/domicon-labs/op-geth.git
+    ```
+
+    {<h3>进入 op-geth</h3>}
+
+    ```bash
+    cd op-geth
+    ```
+
+    {<h3>切换正确的分支</h3>}
+
+    ```bash
+    git checkout develop
+    ```
+
+    {<h3>构建 op-geth</h3>}
+
+    ```bash
+    make geth
+    ```
+
+</Steps>
+
+## 填写环境变量
+
+在开始部署之前，您需要填写一些环境变量
+
+<Steps>
+
+    {<h3>进入Domicon</h3>}
+
+    ```bash
+    cd ~/domicon
+    ```
+
+    {<h3>复制示例环境变量文件</h3>}
+
+    ```bash
+    cp .envrc.example .envrc
+    ```
+
+    {<h3>填写环境变量文件</h3>}
+
+    打开环境变量文件并填写以下内容:
+
+    | Variable Name | Description                                                                                                                                                                                                  |
+    | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+    | `L1_RPC_URL`  | L1节点的RPC (教程中是Sepolia).                                                                                                                                                          |
+    | `L1_RPC_KIND` | 您要连接到的 L1 RPC 类型，用于通知最佳交易收据获取。有效选项: `alchemy`, `quicknode`, `infura`, `parity`, `nethermind`, `debug_geth`, `erigon`, `basic`, `any`. |
+
+</Steps>
