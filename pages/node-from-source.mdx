@@ -118,3 +118,223 @@ pnpm build
     | `L1_RPC_KIND` | 您要连接到的 L1 RPC 类型，用于通知最佳交易收据获取。有效选项: `alchemy`, `quicknode`, `infura`, `parity`, `nethermind`, `debug_geth`, `erigon`, `basic`, `any`. |
 
 </Steps>
+
+## Generate Addresses
+
+成为广播节电时，您需要一个地址及其私钥:
+
+*   `Admin` 用于充当广播节点地址.
+
+<Steps>
+
+    {<h3>进入Domicon</h3>}
+
+    ```bash
+    cd ~/domicon
+    ```
+
+    {<h3>创建新地址</h3>}
+
+    <Callout type="error">
+        不应该在生产部署中使用 wallets.sh 工具。
+        如果你要在生产环境中使用，你可能应该使用硬件安全模块和硬件钱包的组合。
+    </Callout>
+
+    ```bash
+    ./packages/contracts-bedrock/scripts/getting-started/wallets.sh
+    ```
+
+    {<h3>检查输出</h3>}
+
+    请确保您看到如下输出内容:
+
+    ```text
+    Copy the following into your .envrc file:
+
+    # Admin account
+    export GS_ADMIN_ADDRESS=0x664AA8a9431fd9E704A505D51399D9AB87EbD03b
+    export GS_ADMIN_PRIVATE_KEY=0x28f02eaece607fa434f8d7dfa3f58f75b3abca6d8eea5b305f18e694e1116bad
+
+    # Batcher account
+    export GS_BATCHER_ADDRESS=0x4EDdC3052CFc9A0270f3dcdD56BD950E3fe3a8Ff
+    export GS_BATCHER_PRIVATE_KEY=0x982bd86d6e8383e067abafb36d912040e011a8bf7296f8b0e3040d136bba317c
+
+    # Proposer account
+    export GS_PROPOSER_ADDRESS=0x8a8d1Cc4B8138F2966a7983F07A0E9161405214f
+    export GS_PROPOSER_PRIVATE_KEY=0xde033063c9d62895966f00a125711ab4536cd70e2a7ec4f898e2522a4664ad67
+
+    # Sequencer account
+    export GS_SEQUENCER_ADDRESS=0xa8C6b7321327634C1CBC1d683E8207bF3DF8e365
+    export GS_SEQUENCER_PRIVATE_KEY=0xd04072c9391df26a75c08b0492e3c61306a1a7b052112569c5fc1e72ce89c6a3
+    ```
+
+    {<h3>保存地址</h3>}
+
+    将前一步骤的输出复制并粘贴到你的 .envrc 文件中，按照指示进行操作。
+
+    {<h3>为地址提供资金</h3>}
+
+    **您需要为地址提供一定数量的代币(Dom),并授权给相应合约**
+
+    *   `Admin` — 5000 Domicon
+
+</Steps>
+
+## 加载环境变量
+
+现在您已经填写了环境变量文件，您需要将这些变量加载到终端中。
+
+<Steps>
+
+    {<h3>进入Domicon</h3>}
+
+    ```bash
+    cd ~/domicon
+    ```
+
+    {<h3>使用 direnv 加载变量</h3>}
+
+    <Callout>
+        您将使用 `direnv` 将 `.envrc` 文件加载到终端中.
+    </Callout>
+
+    接下来，您需要允许 direnv 读取此文件并使用以下命令将变量加载到终端中。
+
+    ```bash
+    direnv allow
+    ```
+
+    <Callout>
+        警告： `direnv`每当您的`.envrc`文件更改时，都会自行卸载。
+        **每次更改`.envrc`文件时,都必须重新运行以下命令。**
+    </Callout>
+
+</Steps>
+
+## 初始化 `op-geth`
+
+你几乎已经准备好运行你的广播节点！
+现在你只需要运行几个命令来初始化`op-geth`。
+
+<Steps>
+
+    {<h3>进入op-geth目录</h3>}
+
+    ```bash
+    cd ~/op-geth
+    ```
+
+    {<h3>创建数据目录文件夹</h3>}
+
+    ```bash
+    mkdir datadir
+    ```
+
+    {<h3>初始化 op-geth</h3>}
+
+    ```bash
+    build/bin/geth init --datadir=datadir genesis.json
+    ```
+
+</Steps>
+
+## 启动 `op-geth`
+
+现在您将启用 `op-geth`, 你的执行客户端.
+请注意，在下一步启动共识客户端之前，您不会看到任何交易。
+
+<Steps>
+
+    {<h3>打开一个新的终端</h3>}
+
+    您需要一个新的终端窗口才能运行`op-geth`。
+
+    {<h3>进入op-geth目录</h3>}
+
+    ```bash
+    cd ~/op-geth
+    ```
+
+    {<h3>运行 op-geth</h3>}
+
+    ```bash
+    ./build/bin/geth \
+    --datadir ./datadir \
+    --http \
+    --http.corsdomain="*" \
+    --http.vhosts="*" \
+    --http.addr=0.0.0.0 \
+    --http.api=web3,debug,eth,txpool,net,engine \
+    --ws \
+    --ws.addr=0.0.0.0 \
+    --ws.port=8546 \
+    --ws.origins="*" \
+    --ws.api=debug,eth,txpool,net,engine \
+    --gcmode=archive \
+    --maxpeers=10 \
+    --networkid=1988 \
+    --authrpc.vhosts="*" \
+    --authrpc.addr=0.0.0.0 \
+    --authrpc.port=8551 \
+    --authrpc.jwtsecret=./jwt.txt \
+    --rollup.disabletxpoolgossip=true
+    ```
+
+</Steps>
+
+## 启动 `op-node`
+
+一旦你开始运行`op-geth`，你就需要运行`op-node`.
+与以太坊一样，Domicon 有一个共识客户端（`op-node`）和一个执行客户端（`op-geth`）。
+共识客户端通过API“驱动”执行客户端。
+
+<Steps>
+
+    {<h3>打开一个新的终端</h3>}
+
+    您需要一个新的终端窗口才能运行`op-node`。
+
+    {<h3>进入op-node目录</h3>}
+
+    ```bash
+    cd ~/domicon/op-node
+    ```
+
+    {<h3>运行 op-node</h3>}
+
+    ```bash
+    ./bin/op-node \
+    --l2=http://localhost:8551 \
+    --l2.jwt-secret=./jwt.txt \
+    --sequencer.l1-confs=5 \
+    --verifier.l1-confs=4 \
+    --rollup.config=./rollup.json \
+    --rpc.addr=0.0.0.0 \
+    --rpc.port=8547 \
+    --rpc.enable-admin \
+    --l1=$L1_RPC_URL \
+    --l1.rpckind=$L1_RPC_KIND \
+    --p2p.static="-------" \
+    --p2p.listen.ip=0.0.0.0 \
+    --p2p.listen.tcp=9003 \
+    --p2p.listen.udp=9003 \
+    --l1-eth-rpc=$L1_RPC_URL \
+    --private-key=$GS_ADMIN_PRIVATE_KEY
+    ```
+
+    运行此命令后，您将看到`op-node`开始进行链同步。
+
+    <Callout type="info">
+        **因为基于op-satck而开发，您可能会看到其他的无用节点，信息通过制定以下参数来避免浪费时间和网络资源**
+
+        ```
+        --p2p.static=<nodes> \
+        --p2p.listen.ip=0.0.0.0 \
+        --p2p.listen.tcp=9003 \
+        --p2p.listen.udp=9003 \
+        ```
+
+        您也可以删除该选项，`--p2p.static`但您可能会看到来自其他链使用相同链 ID 的失败请求。
+    </Callout>
+
+</Steps>
