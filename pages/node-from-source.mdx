@@ -6,10 +6,9 @@
 | ------------------------------------------------------------- | -------- | --------------------- |
 | [git](https://git-scm.com/)                                   | `^2`     | `git --version`       |
 | [go](https://go.dev/)                                         | `^1.21`  | `go version`          |
-| [node](https://nodejs.org/en/)                                | `^20`    | `node --version`      |
-| [pnpm](https://pnpm.io/installation)                          | `^8`     | `pnpm --version`      |
 | [foundry](https://github.com/foundry-rs/foundry#installation) | `^0.2.0` | `forge --version`     |
 | [make](https://linux.die.net/man/1/make)                      | `^4`     | `make --version`      |
+| [jq](https://github.com/jqlang/jq)                            | `^1.6`   | `jq --version`        |
 
 ## Build Domicon
 
@@ -34,20 +33,6 @@ cd domicon
 
 ```bash
 git checkout domicon
-```
-
-{<h3>检查依赖项</h3>}
-
-运行以下脚本并仔细检查是否安装了所有必需的版本。如果未安装正确的版本，则可能会遇到意外错误。
-
-```bash
-./packages/contracts-bedrock/scripts/getting-started/versions.sh
-```
-
-{<h3>安装依赖项</h3>}
-
-```bash
-pnpm install
 ```
 
 {<h3>构建domicon中的各种软件包</h3>}
@@ -123,7 +108,7 @@ pnpm build
 
 成为广播节电时，您需要一个地址及其私钥:
 
-*   `Admin` 用于充当广播节点地址.
+*   `Broadcaster` 用于充当广播节点地址.
 
 <Steps>
 
@@ -141,7 +126,7 @@ pnpm build
     </Callout>
 
     ```bash
-    ./packages/contracts-bedrock/scripts/getting-started/wallets.sh
+    ./packages/contracts-bedrock/scripts/getting-started/broadcast.sh
     ```
 
     {<h3>检查输出</h3>}
@@ -151,21 +136,9 @@ pnpm build
     ```text
     Copy the following into your .envrc file:
 
-    # Admin account
-    export GS_ADMIN_ADDRESS=0x664AA8a9431fd9E704A505D51399D9AB87EbD03b
-    export GS_ADMIN_PRIVATE_KEY=0x28f02eaece607fa434f8d7dfa3f58f75b3abca6d8eea5b305f18e694e1116bad
-
-    # Batcher account
-    export GS_BATCHER_ADDRESS=0x4EDdC3052CFc9A0270f3dcdD56BD950E3fe3a8Ff
-    export GS_BATCHER_PRIVATE_KEY=0x982bd86d6e8383e067abafb36d912040e011a8bf7296f8b0e3040d136bba317c
-
-    # Proposer account
-    export GS_PROPOSER_ADDRESS=0x8a8d1Cc4B8138F2966a7983F07A0E9161405214f
-    export GS_PROPOSER_PRIVATE_KEY=0xde033063c9d62895966f00a125711ab4536cd70e2a7ec4f898e2522a4664ad67
-
-    # Sequencer account
-    export GS_SEQUENCER_ADDRESS=0xa8C6b7321327634C1CBC1d683E8207bF3DF8e365
-    export GS_SEQUENCER_PRIVATE_KEY=0xd04072c9391df26a75c08b0492e3c61306a1a7b052112569c5fc1e72ce89c6a3
+    # Broadcaster account
+    export GS_BROADCASTER_ADDRESS=0x9585DD9992F36A32301324F82F67e6EEbF06caE0
+    export GS_BROADCASTER_PRIVATE_KEY=0xc75b7b0a1dfeb225a626cf3bbaac3bea2e86f68374a4f2a88f1769127d167fe9
     ```
 
     {<h3>保存地址</h3>}
@@ -174,9 +147,9 @@ pnpm build
 
     {<h3>为地址提供资金</h3>}
 
-    **您需要为地址提供一定数量的代币(Dom),并授权给相应合约**
+    **您需要为地址提供一定数量的代币(Dom),并授权给相应合约  0x2DE928B6494A6fd9194dfE33CE0Cf111E2b8Ac04(测试网阶段暂不需要)**
 
-    *   `Admin` — 5000 Domicon
+    *   `Broadcaster` — 5000 Domicon
 
 </Steps>
 
@@ -236,6 +209,12 @@ pnpm build
     build/bin/geth init --datadir=datadir genesis.json
     ```
 
+    {<h3>创建一个认证密钥,并复制到op-node中</h3>}
+
+    ```bash
+    openssl rand -hex 32 > jwt.txt
+    cp ./jwt.txt ~/domicon/op-node/
+    ```
 </Steps>
 
 ## 启动 `op-geth`
@@ -277,8 +256,15 @@ pnpm build
     --authrpc.addr=0.0.0.0 \
     --authrpc.port=8551 \
     --authrpc.jwtsecret=./jwt.txt \
-    --rollup.disabletxpoolgossip=true
+    --rollup.disabletxpoolgossip=true \
+    --bootnodes "enode://85a0726f6990477fa199e60e8f984825b943a0ba8d7a30c2c7f24831624a41dd0a58487c3afe016551f9e657f9bcc320bcf4f655d9d3da67b7c683eb07bca367@13.212.115.195:30303" \
+    --rollup.sequencerhttp http://13.212.115.195:8545
     ```
+
+    <Callout type="info">
+        --bootnodes 为官方节点信息
+        --rollup.sequencerhttp 为官方节点信息
+    </Callout>
 
 </Steps>
 
@@ -314,12 +300,12 @@ pnpm build
     --rpc.enable-admin \
     --l1=$L1_RPC_URL \
     --l1.rpckind=$L1_RPC_KIND \
-    --p2p.static="-------" \
+    --p2p.static="/ip4/13.212.115.195/tcp/9003/p2p/16Uiu2HAmCeGLkZMk662awQ9KQMeWNqWhn3vZDkRQwZwbh9siRFnP" \
     --p2p.listen.ip=0.0.0.0 \
     --p2p.listen.tcp=9003 \
     --p2p.listen.udp=9003 \
     --l1-eth-rpc=$L1_RPC_URL \
-    --private-key=$GS_ADMIN_PRIVATE_KEY
+    --private-key=$GS_BROADCASTER_PRIVATE_KEY
     ```
 
     运行此命令后，您将看到`op-node`开始进行链同步。
@@ -335,6 +321,7 @@ pnpm build
         ```
 
         您也可以删除该选项，`--p2p.static`但您可能会看到来自其他链使用相同链 ID 的失败请求。
+        本例子中为官方节点信息。
     </Callout>
 
 </Steps>
