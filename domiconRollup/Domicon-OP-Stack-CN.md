@@ -105,7 +105,7 @@ export GS_SEQUENCER_PRIVATE_KEY=0x2a0290473f3838dbd083a5e17783e3cc33c905539c0121
 5. 为`admin`地址充值L1测试网ETH（建议ETH大于2.5）  
   建议通过水龙头：`https://sepolia-faucet.pk910.de/#/` 获得
 6. 为`batcher`地址充值dom代币  
-6.1 进入`https://sepolia.etherscan.io/address/0x2DE928B6494A6fd9194dfE33CE0Cf111E2b8Ac04#writeContract`并连接MetaMask钱包。  
+6.1 访问`https://sepolia.etherscan.io/address/0x2DE928B6494A6fd9194dfE33CE0Cf111E2b8Ac04#writeContract`并连接MetaMask钱包。  
 6.2 在`mint`中为`batcher`地址充值Dom代币，建议数量为`10000000000000000000000`。   
 6.3 将MetaMask切换到batcher账户，通过`approve`将`batcher`的Dom代币授权给`0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175`, 建议数量为`10000000000000000000000`
 ## 加载环境变量

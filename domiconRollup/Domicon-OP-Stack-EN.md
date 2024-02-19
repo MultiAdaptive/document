@@ -107,7 +107,7 @@ export GS_SEQUENCER_PRIVATE_KEY=0x2a0290473f3838dbd083a5e17783e3cc33c905539c0121
 6. Fund `batcher` address Dom tokens  
  6.1 Visit `https://sepolia.etherscan.io/address/0x2DE928B6494A6fd9194dfE33CE0Cf111E2b8Ac04#writeContract` and connect the MetaMask wallet.  
  6.2 Fund Dom tokens to the `batcher` address in `mint`. The recommended amount is `10000000000000000000000`.  
- 6.3 Switch MetaMask to the batcher account, and authorize the Dom token of `batcher` to `0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175` through `approve`. The recommended amount is `10000000000000000000000`
+ 6.3 Switch MetaMask to the `batcher` account, and approve the Dom token of `batcher` to `0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175` through `approve`. The recommended amount is `10000000000000000000000`
 ## Load Environment variables
 1. Enter the Optimism Monorepo 
 ```bash
@@ -260,7 +260,7 @@ cd ~/optimism/op-batcher
 ```
 3. Run op-batcher  
 `l1-domicon-nodes-contract` is the contract that records domicon broadcast node information.   
-`l1-domicon-commitment-contract` is the contract for batcher users to query index information.
+`l1-domicon-commitment-contract` is the contract for batcher users to submit commitment and query the index information.
 ```bash
 ./bin/op-batcher \
   --l2-eth-rpc=http://localhost:8545 \
@@ -290,13 +290,14 @@ git clone https://github.com/HONGYI-SD/nodejs-tools.git
 git checkout dev
 cd nodejs-tools 
 ```
-3. run this tool
+3. install and run this tool
 ```bash
+npm install web3
 node sendtx.mjs
 ```
 4. If the previous step is executed successfully, you can see transaction submission records in op-geth and op-node.
 ## Recover DA data from domicon  
-When op-node starts, it will read domicon's smart contract to obtain domicon node information. When DA data needs to be restored, the op-node will request DA data from the domicon node. If the current node cannot return data, it will try the next node.  
+When op-node starts, it will read domicon's smart contract to obtain domicon node information. When the Rollup need to restart from blank, the op-node will request DA data from the domicon node. If the current node cannot return data, it will try the next node.  
 The core code is located in `op-node/node/dasource.go`  
 1. When op-node is initialized, obtain dominode information from the contract
 ```go
