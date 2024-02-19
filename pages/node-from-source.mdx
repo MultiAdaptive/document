@@ -212,7 +212,7 @@ pnpm build
     {<h3>创建一个认证密钥,并复制到op-node中</h3>}
 
     ```bash
-    build/bin/geth init --datadir=datadir genesis.json
+    openssl rand -hex 32 > jwt.txt
     cp ./jwt.txt ~/domicon/op-node/
     ```
 </Steps>
