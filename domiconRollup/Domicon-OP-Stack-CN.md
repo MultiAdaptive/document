@@ -1,5 +1,5 @@
 # 如何创建自己的domicon op rollup  
-&emsp;&emsp; 该文档演示如何创建一个自己的rollup，该rollup以domicon为Data Access server。
+&emsp;&emsp; 该文档演示如何创建一个自己的rollup，该rollup以domicon为Data Availability Layer。
 ## 程序依赖环境准备
 | Dependency                                                    | Version  | Version Check Command |
 | ------------------------------------------------------------- | -------- | --------------------- |
@@ -18,9 +18,10 @@
 cd ~
 git clone https://github.com/domicon-labs/optimism.git
 ```
-2. 进入内部
+2. 进入内部并选择develop-node分支
 ```bash
 cd optimism
+git checkout develop-node
 ```
 3. 检查一下你的环境依赖
 ```bash
@@ -101,8 +102,12 @@ export GS_SEQUENCER_ADDRESS=0xC06566E8Ec6cF81B4B26376880dB620d83d50Dfb
 export GS_SEQUENCER_PRIVATE_KEY=0x2a0290473f3838dbd083a5e17783e3cc33c905539c0121f9c76614dda8a38dca
 ```
 4. 复制上述输出到`.envrc`文件中
-5. 为`admin`和`batcher`地址充值  
-- [ ] todo 需要从domicon测试账户充值  
+5. 为`admin`地址充值L1测试网ETH（建议ETH大于2.5）  
+  建议通过水龙头：`https://sepolia-faucet.pk910.de/#/` 获得
+6. 为`batcher`地址充值dom代币  
+6.1 访问`https://sepolia.etherscan.io/address/0x2DE928B6494A6fd9194dfE33CE0Cf111E2b8Ac04#writeContract`并连接MetaMask钱包。  
+6.2 在`mint`中为`batcher`地址充值Dom代币，建议数量为`10000000000000000000000`。   
+6.3 将MetaMask切换到batcher账户，通过`approve`将`batcher`的Dom代币授权给`0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175`, 建议数量为`10000000000000000000000`
 ## 加载环境变量
 您需要加载一些环境变量到您的terminal中。
 1. 进入optimism
@@ -142,8 +147,8 @@ cd packages/contracts-bedrock
 ```bash
 ./scripts/getting-started/config.sh
 ```
-## 部署domicon智能合约
-1. 部署domicon合约
+## 部署op-satck L1智能合约
+1. 部署合约
 ```bash
 forge script scripts/Deploy.s.sol:Deploy --private-key $GS_ADMIN_PRIVATE_KEY --broadcast --rpc-url $L1_RPC_URL
 ```
@@ -246,7 +251,7 @@ $ ./bin/op-node \
   --p2p.sequencer.key=$GS_SEQUENCER_PRIVATE_KEY \
   --l1=$L1_RPC_URL \
   --l1.rpckind=$L1_RPC_KIND \
-  --l1.domicon-nodes-contract=0xF90ba1FDe4363570cc6555EBF3801a9852acb88f
+  --l1.domicon-nodes-contract=0x76F90b92119E677C7C1a697216Ba6662436b7404
 ```
 ## 启动op-batcher
 1. 开启一个新的terminal窗口
@@ -255,8 +260,8 @@ $ ./bin/op-node \
 cd ~/optimism/op-batcher
 ```
 3. 运行batcher  
-`l1-domicon-nodes-contract`为记录domicon广播节点信息的合约（todo: 合约地址获取方式）。  
-`l1-domicon-commitment-contract`为batcher用户查询index信息的合约(todo: 合约地址获取方式)。
+`l1-domicon-nodes-contract`为记录domicon广播节点信息的合约。  
+`l1-domicon-commitment-contract`为batcher用户查询index信息的合约。
 ```bash
 ./bin/op-batcher \
   --l2-eth-rpc=http://localhost:8545 \
@@ -273,9 +278,9 @@ cd ~/optimism/op-batcher
   --l1-eth-rpc=$L1_RPC_URL \
   --private-key=$GS_BATCHER_PRIVATE_KEY \
   --network-timeout="40s" \
-  --kzg-srs=./bin/srs \
-  --l1-domicon-nodes-contract=0xF90ba1FDe4363570cc6555EBF3801a9852acb88f \
-  --l1-domicon-commitment-contract=0x5f5cf46cf14d725311b9461b01bd22ceebf75df3
+  --kzg-srs=./srs \
+  --l1-domicon-nodes-contract=0x76F90b92119E677C7C1a697216Ba6662436b7404 \
+  --l1-domicon-commitment-contract=0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175
 ```
 ## 向rollup发送交易  
 我们为您预创建了一个测试账户以及一个发送交易的脚本工具，可以使用该账户来模拟rollup中的交易。 默认交易发送频率为每50毫秒一次。
@@ -283,6 +288,7 @@ cd ~/optimism/op-batcher
 2. 下载测试脚本
 ```bash
 git clone https://github.com/HONGYI-SD/nodejs-tools.git
+git checkout dev
 cd nodejs-tools 
 ```
 3. 运行脚本
