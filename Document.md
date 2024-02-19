@@ -31,11 +31,11 @@
 ## 创建使用Domicon的Rollup
 
 ### 如何发布数据
-[详细介绍](./domiconRollup/publishda.mdx)
+[详细介绍](./domiconRollup/publishDA.md)
 
 ### 如何读取数据
 
 ### Domicon-OP-Stack
-[该部分演示如何启动一个rollup以接入domicon网络。](./domiconRollup/Domicon-OP-Stack.mdx)
+[该部分演示如何启动一个rollup以接入domicon网络。](./domiconRollup/Domicon-OP-Stack-CN.md)
 
 ### Domicon-Polygon-CDK
