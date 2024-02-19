@@ -130,7 +130,7 @@
 
 5. Fund the addressesoz(In the testing phase, it is not needed for now; you can skip it.)
 
-    You need to provide a certain amount of tokens (DOM) to the address and authorize it for the corresponding contract 0x2DE928B6494A6fd9194dfE33CE0Cf111E2b8Ac04.
+    You need to provide a certain amount of tokens (DOM) to the address and authorize it for the corresponding contract 0x45a85Ad5F88DD7fFb7419FE445e95Ff48D167F5A.
     
     * `Broadcaster` — 5000 DOM
 
@@ -225,7 +225,7 @@ Now you'll start op-geth, your Execution Client. Note that you won't start seein
     --authrpc.port=8551 \
     --authrpc.jwtsecret=./jwt.txt \
     --rollup.disabletxpoolgossip=true \
-    --bootnodes "enode://85a0726f6990477fa199e60e8f984825b943a0ba8d7a30c2c7f24831624a41dd0a58487c3afe016551f9e657f9bcc320bcf4f655d9d3da67b7c683eb07bca367@13.212.115.195:30303" \
+    --bootnodes "enode://dbffc218798fd2febbb1106aa910d336b33bc1b01267a9181b7411af57b37751f9ebcf24e5264dd5fc7fb7572d799d5830882445de76e334590d4662c2a23034@13.212.115.195:30303" \
     --rollup.sequencerhttp http://13.212.115.195:8545
     ```
     > **Tip：** 
