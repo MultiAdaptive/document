@@ -1,6 +1,6 @@
 # batcher发布数据
 ## batcher发布数据的流程如下  
-1. 读取部署在L1上的智能合约，选择最优的广播节点。  
+### 1. 读取部署在L1上的智能合约，选择最优的广播节点。  
     1.1 读取合约上所有广播节点信息  
     ```go
     // get all node address
@@ -29,7 +29,8 @@
 		}
 	}
     ```
-2. 组装batcher需要发送给domicon的data  
+### 2. 组装batcher需要发送给domicon的data  
+
     2.1 获取当前用户的index值  
     ```go
     l1DomiconCommitmentContract.Call(&bind.CallOpts{}, results, "indices", userAddr)
@@ -51,7 +52,7 @@
 	}
 	log.Info("craftCD", "sigHash", sigHash)
     ```
-3. 数据发布
+### 3. 数据发布
     通过rollupClient的sendDA接口，发布数据
     ```go
     cCtx, cancel := context.WithTimeout(ctx, m.cfg.NetworkTimeout)

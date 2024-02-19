@@ -1,6 +1,6 @@
-# 如何创建自己的domicon op rollup  
-&emsp;&emsp; 该文档演示如何创建一个自己的rollup，该rollup以domicon为Data Access server。
-## 程序依赖环境准备
+# How to create your own domicon op rollup  
+&emsp;&emsp; This document demonstrates how to create your own rollup that uses domicon as the Data Availability Layer.
+## Software Dependencies
 | Dependency                                                    | Version  | Version Check Command |
 | ------------------------------------------------------------- | -------- | --------------------- |
 | [git](https://git-scm.com/)                                   | `^2`     | `git --version`       |
@@ -11,76 +11,77 @@
 | [make](https://linux.die.net/man/1/make)                      | `^3`     | `make --version`      |
 | [jq](https://github.com/jqlang/jq)                            | `^1.6`   | `jq --version`        |
 | [direnv](https://direnv.net)                                  | `^2`     | `direnv --version`    |
-## 代码准备
-### domicon optimism部分
-1. 下载domicon optimism代码
+## Build the Source Code
+### domicon optimism
+1. download domicon optimism
 ```bash
 cd ~
 git clone https://github.com/domicon-labs/optimism.git
 ```
-2. 进入内部
+2. Enter the Optimism Monorepo and check out develop-node branch
 ```bash
 cd optimism
+git checkout develop-node
 ```
-3. 检查一下你的环境依赖
+3. Check your dependencies
 ```bash
 ./packages/contracts-bedrock/scripts/getting-started/versions.sh
 ```
-4. 安装依赖
+4. Install dependencies
 ```bash
 pnpm install
 ```
-5. 编译
+5. build code
 ```bash
 make op-node op-batcher
 pnpm build
 ```
-### op-geth部分
-1. 下载op-geth代码
+### op-geth
+1. download op-geth
 ```bash
 cd ~
 git clone https://github.com/ethereum-optimism/op-geth.git
 ```
-2. 进入内部
+2. Enter the op-geth Monorepo
 ```bash
 cd op-geth
 ```
-3. 编译op-geth
+3. build op-geth
 ```bash
 make op-geth
 ```
-## 环境变量配置
-在部署rollup之前需要配置一些环境变量。  
-1. 进入optimism目录
+## Fill Out Environment Variables
+You'll need to fill out a few environment variables before you can start deploying your chain.  
+1. Enter the optimism Monorepo
 ```bash
 cd ~/optimism
 ```
-2. 复制一份环境变量的文件
+2. Duplicate the sample environment variable file
 ```bash
 cp .envrc.example .envrc
 ```
-3. 打开.envrc文件，填写如下环境变量  
+3. Open up the environment variable file and fill out the following variables  
 
 | Variable Name | Description                                                                                                                                                                                                  |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `L1_RPC_URL`  | URL for your L1 node (a Sepolia node in this case).                                                                                                                                                          |
 | `L1_RPC_KIND` | Kind of L1 RPC you're connecting to, used to inform optimal transactions receipts fetching. Valid options: `alchemy`, `quicknode`, `infura`, `parity`, `nethermind`, `debug_geth`, `erigon`, `basic`, `any`. |
 
-## 生成地址
-你需要4个地址以及它们的私钥来设置你的链  
-`admin` 用于更新、部署合约  
-`batcher` 用于发送sequencer的交易数据到domicon
-`proposer` 发送L2的交易结果（状态根）到L1
-`sequencer`签名p2p网络中的区块  
-1. 进入optimism
+## Generate Addresses
+You'll need four addresses and their private keys when setting up the chain:  
+The `Admin` address has the ability to upgrade contracts.
+The `Batcher` address publishes Sequencer transaction data to L1.
+The `Proposer` address publishes L2 transaction results (state roots) to L1.
+The `Sequencer` address signs blocks on the p2p network.
+1. Enter the Optimism Monorepo
 ```bash
 cd ~/optimism
 ```
-2. 生成地址
+2. Generate new addresses
 ```bash
 ./packages/contracts-bedrock/scripts/getting-started/wallets.sh
 ```
-3. 上一步的输出类似下面这样
+3. Make sure that you see output that looks something like the following:
 ```text
 Copy the following into your .envrc file:
   
@@ -100,68 +101,71 @@ export GS_PROPOSER_PRIVATE_KEY=0x2d1f265683ebe37d960c67df03a378f79a7859038c6d634
 export GS_SEQUENCER_ADDRESS=0xC06566E8Ec6cF81B4B26376880dB620d83d50Dfb
 export GS_SEQUENCER_PRIVATE_KEY=0x2a0290473f3838dbd083a5e17783e3cc33c905539c0121f9c76614dda8a38dca
 ```
-4. 复制上述输出到`.envrc`文件中
-5. 为`admin`和`batcher`地址充值  
-- [ ] todo 需要从domicon测试账户充值  
-## 加载环境变量
-您需要加载一些环境变量到您的terminal中。
-1. 进入optimism
+4. Copy the output from the previous step and paste it into your .envrc file as directed.  
+5. Fund `admin` address with 2.5 Sepolia ETH.
+  It is recommended to obtain it through the faucet: `https://sepolia-faucet.pk910.de/#/`
+6. Fund `batcher` address Dom tokens  
+ 6.1 Visit `https://sepolia.etherscan.io/address/0x2DE928B6494A6fd9194dfE33CE0Cf111E2b8Ac04#writeContract` and connect the MetaMask wallet.  
+ 6.2 Fund Dom tokens to the `batcher` address in `mint`. The recommended amount is `10000000000000000000000`.  
+ 6.3 Switch MetaMask to the batcher account, and authorize the Dom token of `batcher` to `0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175` through `approve`. The recommended amount is `10000000000000000000000`
+## Load Environment variables
+1. Enter the Optimism Monorepo 
 ```bash
 cd ~/optimism
 ```
-2. 使用direnv加载环境变量
+2. Load the variables with direnv
 ```bash
 direnv allow
 ```
-如果没有生效的话，可以先hook再重试一下。  
-&emsp;&emsp;如果terminal是bash
+If it doesn't take effect, you can hook it and try again.   
+&emsp;&emsp;if your terminal is bash
 ```bash
  eval "$(direnv hook bash)"
 ```
-&emsp;&emsp;如果terminal是zsh
+&emsp;&emsp;if your terminal is zsh
 ```bash
 eval "$(direnv hook zsh)"
 ```
-3. 确认环境变量被正确加载
-再次执行 `direnv allow`，如果得到如下输出，则是加载成功
+3. Confirm that the variables were loaded
+After running direnv allow you should see output that looks something like the following  
 ```bash
 direnv: loading ~/optimism/.envrc                                                            
 direnv: export +DEPLOYMENT_CONTEXT +ETHERSCAN_API_KEY +GS_ADMIN_ADDRESS +GS_ADMIN_PRIVATE_KEY +GS_BATCHER_ADDRESS +GS_BATCHER_PRIVATE_KEY +GS_PROPOSER_ADDRESS +GS_PROPOSER_PRIVATE_KEY +GS_SEQUENCER_ADDRESS +GS_SEQUENCER_PRIVATE_KEY +IMPL_SALT +L1_RPC_KIND +L1_RPC_URL +PRIVATE_KEY +TENDERLY_PROJECT +TENDERLY_USERNAME
 ```
-## 配置网络
-1. 进入optimsim
+## Configure your network
+1. Enter the Optimism Monorepo
 ```bash
 cd ~/optimism
 ```
-2. 进入contracts-bedrock
+2. Move into the contracts-bedrock package
 ```bash
 cd packages/contracts-bedrock
 ```
-3. 生成配置文件
-执行下列命令，会在目录`deploy-config`下生成配置文件`getting-started.json`
+3. Generate the configuration file
+Run the following script to generate the getting-started.json configuration file inside of the deploy-config directory.
 ```bash
 ./scripts/getting-started/config.sh
 ```
-## 部署domicon智能合约
-1. 部署domicon合约
+## Deploy the op-satck L1 contracts 
+1. Deploy the L1 contracts
 ```bash
 forge script scripts/Deploy.s.sol:Deploy --private-key $GS_ADMIN_PRIVATE_KEY --broadcast --rpc-url $L1_RPC_URL
 ```
-2. 生成合约的artifacts
+2. Generate contract artifacts
 ```bash
 forge script scripts/Deploy.s.sol:Deploy --sig 'sync()' --rpc-url $L1_RPC_URL
 ```
-## 生成L2配置文件
-&emsp;&emsp;有3个重要的文件需要生成  
+## Generate the L2 config files
+You need to generate three important files  
  `genesis.json` includes the genesis state of the chain for the Execution Client.  
  `rollup.json`  includes configuration information for the Consensus Client.  
 `jwt.txt` is a JSON Web Token that allows the Consensus Client and the Execution Client to communicate securely (the same mechanism is used in Ethereum clients).  
-1. 进入op-node
+1. Navigate to the op-node package
 ```bash
 cd ~/optimism/op-node
 ```
-2. 创建genesis.json  
-以下命令会在op-node目录下生成`genesis.json`和`rollup.json`
+2. Create genesis files  
+Now you'll generate the genesis.json and rollup.json files within the op-node folder
 ```bash
 go run cmd/main.go genesis l2 \
   --deploy-config ../packages/contracts-bedrock/deploy-config/getting-started.json \
@@ -170,35 +174,35 @@ go run cmd/main.go genesis l2 \
   --outfile.rollup rollup.json \
   --l1-rpc $L1_RPC_URL
 ```
-3. 创建authentication key
+3. Create an authentication key
 ```bash
 openssl rand -hex 32 > jwt.txt
 ```
-4. 拷贝创世相关文件到op-geth  
+4. Copy genesis files into the op-geth directory  
 ```bash
 cp genesis.json ~/op-geth
 cp jwt.txt ~/op-geth
 ```
-## 初始化op-geth
-1. 进入op-geth
+## Initialize op-geth
+1. Navigate to the op-geth directory
 ```bash
 cd ~/op-geth
 ```
-2. 创建数据存储目录
+2. Create a data directory folder
 ```bash
 mkdir datadir
 ```
-3. 初始化op-geth
+3. Initialize op-geth
 ```bash
 build/bin/geth init --datadir=datadir genesis.json
 ```
-## 启动op-geth
-1. 打卡一个新的terminal窗口
-2. 进入op-geth
+## Start op-geth
+1. You'll need a new terminal window to run op-geth in.
+2. Navigate to the op-geth directory
 ```bash
 cd ~/op-geth
 ```
-3. 运行op-geth
+3. Run op-geth
 ```bash
 ./build/bin/geth \
   --datadir ./datadir \
@@ -223,14 +227,14 @@ cd ~/op-geth
   --authrpc.jwtsecret=./jwt.txt \
   --rollup.disabletxpoolgossip=true
 ```
-## 启动op-node
-1. 打开一个新的terminal 窗口
-2. 进入op-node目录
+## Start op-node
+1. You'll need a new terminal window to run the op-node in.
+2. Navigate to the op-node directory
 ```bash
 cd ~/optimism/op-node
 ```
-3. 运行op-node  
-`l1.domicon-nodes-contract`为记录domicon广播节点信息的合约地址。
+3. Run op-node  
+`l1.domicon-nodes-contract` is the contract address that records domicon broadcast node information.
 ```bash
 $ ./bin/op-node \
   --l2=http://localhost:8551 \
@@ -246,17 +250,17 @@ $ ./bin/op-node \
   --p2p.sequencer.key=$GS_SEQUENCER_PRIVATE_KEY \
   --l1=$L1_RPC_URL \
   --l1.rpckind=$L1_RPC_KIND \
-  --l1.domicon-nodes-contract=0xF90ba1FDe4363570cc6555EBF3801a9852acb88f
+  --l1.domicon-nodes-contract=0x76F90b92119E677C7C1a697216Ba6662436b7404
 ```
-## 启动op-batcher
-1. 开启一个新的terminal窗口
-2. 进入op-batcher目录
+## Start op-batcher
+1. You'll need a new terminal window to run the op-batcher in.
+2. Navigate to the op-batcher directory
 ```bash
 cd ~/optimism/op-batcher
 ```
-3. 运行batcher  
-`l1-domicon-nodes-contract`为记录domicon广播节点信息的合约（todo: 合约地址获取方式）。  
-`l1-domicon-commitment-contract`为batcher用户查询index信息的合约(todo: 合约地址获取方式)。
+3. Run op-batcher  
+`l1-domicon-nodes-contract` is the contract that records domicon broadcast node information.   
+`l1-domicon-commitment-contract` is the contract for batcher users to query index information.
 ```bash
 ./bin/op-batcher \
   --l2-eth-rpc=http://localhost:8545 \
@@ -273,39 +277,40 @@ cd ~/optimism/op-batcher
   --l1-eth-rpc=$L1_RPC_URL \
   --private-key=$GS_BATCHER_PRIVATE_KEY \
   --network-timeout="40s" \
-  --kzg-srs=./bin/srs \
-  --l1-domicon-nodes-contract=0xF90ba1FDe4363570cc6555EBF3801a9852acb88f \
-  --l1-domicon-commitment-contract=0x5f5cf46cf14d725311b9461b01bd22ceebf75df3
+  --kzg-srs=./srs \
+  --l1-domicon-nodes-contract=0x76F90b92119E677C7C1a697216Ba6662436b7404 \
+  --l1-domicon-commitment-contract=cm:0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175
 ```
-## 向rollup发送交易  
-我们为您预创建了一个测试账户以及一个发送交易的脚本工具，可以使用该账户来模拟rollup中的交易。 默认交易发送频率为每50毫秒一次。
-1. 打开一个新的terminal窗口 
-2. 下载测试脚本
+## Send transaction to rollup  
+We have pre-created a test account and a script tool for sending transactions for you. You can use this account to simulate transactions in rollup. The default transaction sending frequency is every 50 milliseconds.
+1. You'll need a terminal window to run the op-batcher in. 
+2. download code
 ```bash
 git clone https://github.com/HONGYI-SD/nodejs-tools.git
+git checkout dev
 cd nodejs-tools 
 ```
-3. 运行脚本
+3. run this tool
 ```bash
 node sendtx.mjs
 ```
-4. 上一步执行成功的话，可以在op-geth和op-node中看到有交易提交记录
-## 从domicon恢复DA数据  
-op-node在启动时，会读取domicon的智能合约以获取domicon node信息。当需要恢复DA数据时，op-node会向domicon node请求DA数据，如果当前node不能返回数据，则会尝试下一个node。  
-核心代码位于`op-node/node/dasource.go`  
-1. op-node初始化时，从合约中获取domiconnode信息
+4. If the previous step is executed successfully, you can see transaction submission records in op-geth and op-node.
+## Recover DA data from domicon  
+When op-node starts, it will read domicon's smart contract to obtain domicon node information. When DA data needs to be restored, the op-node will request DA data from the domicon node. If the current node cannot return data, it will try the next node.  
+The core code is located in `op-node/node/dasource.go`  
+1. When op-node is initialized, obtain dominode information from the contract
 ```go
 func NewDaSource(ctx context.Context, log log.Logger, cfg *DaSourceConfig) (*DaSource, error) {
     ...
 }
 ```
-2. 根据交易哈希，向domicon查询DA信息
+2. Query domicon for DA information based on the transaction hash
 ```go
 func (d *DaSource) FileDataByHash(ctx context.Context, hash common.Hash) ([]byte, error){
     ...
 }
 ```
-3. 尝试下一个node  
+3. try next node  
 ```go
 func (d *DaSource) TryNextNode(ctx context.Context, rpc string) (*dial.StaticL2RollupProvider, error) {
     ...
