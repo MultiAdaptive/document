@@ -13,7 +13,7 @@
 
 ## Build Domicon
 
-### Build the Optimism Monorepo
+### Build the Domicon Monorepo
 
 1. 克隆 Domicon  
 
@@ -130,11 +130,15 @@ export GS_BROADCASTER_PRIVATE_KEY=0xc75b7b0a1dfeb225a626cf3bbaac3bea2e86f68374a4
 
 * 将前一步骤的输出复制并粘贴到你的 .envrc 文件中，按照指示进行操作。
 
-5. 为地址提供资金(测试网阶段，暂不需要)
+5. 为地址提供资金(测试网阶段，暂不需要，可跳过)
 
 您需要为地址提供一定数量的代币(Dom),并授权给相应合约  0x2DE928B6494A6fd9194dfE33CE0Cf111E2b8Ac04
 
 * `Broadcaster` — 5000 Domicon
+
+6. 执行以下脚本将完成节点注册
+
+```......```
 
 ## 加载环境变量
 
