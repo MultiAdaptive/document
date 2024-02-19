@@ -250,7 +250,8 @@ $ ./bin/op-node \
   --p2p.sequencer.key=$GS_SEQUENCER_PRIVATE_KEY \
   --l1=$L1_RPC_URL \
   --l1.rpckind=$L1_RPC_KIND \
-  --l1.domicon-nodes-contract=0x76F90b92119E677C7C1a697216Ba6662436b7404
+  --l1.domicon-nodes-contract=0x22E55bd6215aBD8A878CCB1A0201285e2ECDd1c9
+
 ```
 ## Start op-batcher
 1. You'll need a new terminal window to run the op-batcher in.
@@ -278,8 +279,9 @@ cd ~/optimism/op-batcher
   --private-key=$GS_BATCHER_PRIVATE_KEY \
   --network-timeout="40s" \
   --kzg-srs=./srs \
-  --l1-domicon-nodes-contract=0x76F90b92119E677C7C1a697216Ba6662436b7404 \
-  --l1-domicon-commitment-contract=cm:0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175
+  --l1-domicon-nodes-contract=0x22E55bd6215aBD8A878CCB1A0201285e2ECDd1c9
+ \
+  --l1-domicon-commitment-contract=0x45a85Ad5F88DD7fFb7419FE445e95Ff48D167F5A
 ```
 ## Send transaction to rollup  
 We have pre-created a test account and a script tool for sending transactions for you. You can use this account to simulate transactions in rollup. The default transaction sending frequency is every 50 milliseconds.

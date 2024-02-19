@@ -107,7 +107,7 @@ export GS_SEQUENCER_PRIVATE_KEY=0x2a0290473f3838dbd083a5e17783e3cc33c905539c0121
 6. 为`batcher`地址充值dom代币  
 6.1 访问`https://sepolia.etherscan.io/address/0x2DE928B6494A6fd9194dfE33CE0Cf111E2b8Ac04#writeContract`并连接MetaMask钱包。  
 6.2 在`mint`中为`batcher`地址充值Dom代币，建议数量为`10000000000000000000000`。   
-6.3 将MetaMask切换到batcher账户，通过`approve`将`batcher`的Dom代币授权给`0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175`, 建议数量为`10000000000000000000000`
+6.3 将MetaMask切换到batcher账户，通过`approve`将`batcher`的Dom代币授权给`0x45a85Ad5F88DD7fFb7419FE445e95Ff48D167F5A`, 建议数量为`10000000000000000000000`
 ## 加载环境变量
 您需要加载一些环境变量到您的terminal中。
 1. 进入optimism
@@ -251,7 +251,8 @@ $ ./bin/op-node \
   --p2p.sequencer.key=$GS_SEQUENCER_PRIVATE_KEY \
   --l1=$L1_RPC_URL \
   --l1.rpckind=$L1_RPC_KIND \
-  --l1.domicon-nodes-contract=0x76F90b92119E677C7C1a697216Ba6662436b7404
+  --l1.domicon-nodes-contract=0x22E55bd6215aBD8A878CCB1A0201285e2ECDd1c9
+
 ```
 ## 启动op-batcher
 1. 开启一个新的terminal窗口
@@ -279,8 +280,9 @@ cd ~/optimism/op-batcher
   --private-key=$GS_BATCHER_PRIVATE_KEY \
   --network-timeout="40s" \
   --kzg-srs=./srs \
-  --l1-domicon-nodes-contract=0x76F90b92119E677C7C1a697216Ba6662436b7404 \
-  --l1-domicon-commitment-contract=0x2BbECa3a09d75baBDc9A7F6c0022293d5A14B175
+  --l1-domicon-nodes-contract=0x22E55bd6215aBD8A878CCB1A0201285e2ECDd1c9
+ \
+  --l1-domicon-commitment-contract=0x45a85Ad5F88DD7fFb7419FE445e95Ff48D167F5A
 ```
 ## 向rollup发送交易  
 我们为您预创建了一个测试账户以及一个发送交易的脚本工具，可以使用该账户来模拟rollup中的交易。 默认交易发送频率为每50毫秒一次。
