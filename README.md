@@ -56,7 +56,7 @@ OP-Stack is a tool suite for building op-rollup launched by the Optimistic team.
 
 With just a few simple instructions, users can easily build an op-rollup using Domicon, saving users 90% of DA fees.
 
-For more detailed information, you can view the construction guide in the [domicon-labs/document](./domiconRollup/Domicon-OP-Stack-EN.md) warehouse on github.
+For more detailed information, you can view the construction guide in the [domicon-labs/document](./domiconRollup/Domicon-OP-Stack-EN.md).
 
 ### 3.2 Independent development
 
@@ -72,7 +72,7 @@ When the Rollup project needs to store data, it can first read the broadcast nod
 
 When the Rollup project needs to read DA data and replay to reconstruct the world state, the project side first reads the storage node information from the node contract on Ethereum and looks for the node with the best network conditions. The project party then scans the block and parses it to obtain the corresponding data commitment and txhash, and takes the commitment or txhash to the Domicon storage node to read the DA data and then process it.
 
-For more detailed information, you can view the construction guide in the [domicon-labs/document](./domiconRollup/publishDA-EN.md) warehouse on github.
+For more detailed information, you can view the construction guide in the [domicon-labs/document](./domiconRollup/publishDA-EN.md) .
 
 ## 4. How Domicon Works?
 
