@@ -1,6 +1,6 @@
 # KZG Polynomial Commitments
 
-This is a brief introduction to the commitment scheme KZG, not a strictly mathematical or cryptographic description.
+This is a brief introduction to the polynomial commitment scheme KZG, not a strictly mathematical or cryptographic description.
 
 
 
@@ -12,11 +12,11 @@ It is like this:
 
 **Prover** :  I have a polynomial $f(x)$, and its commitment is $cm_f$ , now send the $cm_f$ to you.
 
-**Verifier** : Thanks, I get the $cm_f$，can you help to comupte the value of polynomial at the position $a$?
+**Verifier** : Thanks, I get the $cm_f$， can you help to compute the value of the polynomial at the position $a$?
 
 **Prover** : Yes, let me compute $b=f(a)$, and generate a proof $p_a$, and send $b,p_a$ to you.
 
-**Verifier** : Get it! I have check your proof $p_a$ with the commiment $cm_f$, now i know that your are honest, and I can beliver that $b=f(a)$, even though I don't know what $f(x)$​ is. 
+**Verifier** : Get it! I have checked your proof $p_a$ with the commitment $cm_f$, and now I know that you are honest, and I can believe that $b=f(a)$, even though I don't know what $f(x)$​ is. 
 
 
 
@@ -66,11 +66,11 @@ Yes, we can perform any linear combination of polynomials, and it is still a pol
 
 If you store a piece of data in a server, is there any way to ensure that the data in the server is properly saved and not lost? The simplest way is to ask the server to send all the data back and you can check it again. But this method is too inefficient. Is there an easy way to accomplish this task? In fact, KZG can achieve it very well.
 
-First, you can encode you data to a polynomial $f(x)$, and compute its KZG commitment $cm_f$. You publish the $cm_f$ (send it to Ethereum for example) and send $f(x)$ to polynomial to the server.
+First, you can encode your data to a polynomial $f(x)$, and compute its KZG commitment $cm_f$. You publish the $cm_f$ (send it to Ethereum for example) and send $f(x)$ to polynomial to the server.
 
 Next, you are the **Verifier**, and the server is the **Prover** :
 
-**Verifier** : Can you help to comupte the value of polynomial $f(x)$ at the position $a$ ? If you hold the whole polynomial, it is an easy task. Don't forget submit your proof.
+**Verifier** : Can you help to comupte the value of polynomial $f(x)$ at the position $a$ ? If you hold the whole polynomial, it is an easy task. Don't forget to submit your proof.
 
 **Prover** : Yes, let me compute $b=f(a)$, and generate a proof $p_a$, and send $b,p_a$ to you.
 
@@ -88,7 +88,7 @@ At the same, we have the KZG commitment set $cm_{f_i}$ for $f_i(x)$. KZG has a l
 
 **Prover** : Yes, let me first comupte $h(x)=\sum k_if_i(x)$ , then compute $b=h(a)$, and generate a proof $p_a$, and send $b,p_a$ to you.
 
-**Verifier**: Get it! I have checked your proof $p_a$ with the commitment $cm_h=\sum k_icm_{f_i}$, now I know that you are honest, and didn't lose my data.
+**Verifier**: Get it! I have checked your proof $p_a$ with the commitment $cm_h=\sum k_icm_{f_i}$, and now I know that you are honest, and didn't lose my data.
 
 
 
@@ -96,7 +96,7 @@ At the same, we have the KZG commitment set $cm_{f_i}$ for $f_i(x)$. KZG has a l
 
 If the data is so large that the network transmission fails, then we need to sample the data.
 
-For example, the server stored the data as a polynomial $f(x)=a_0+a_1x+...+a_{100}x^{100}$ with degree 100. If we want to sample 1/10 of the whole data, we can ask for 10 random point of $f(x):$
+For example, the server stored the data as a polynomial $f(x)=a_0+a_1x+...+a_{100}x^{100}$ with degree 100. If we want to sample 1/10 of the whole data, we can ask for 10 random points of $f(x):$
 
 $$
 (b_0,f(b_0)),(b_1,f(b_1)),...,(b_9,f(b_9))
