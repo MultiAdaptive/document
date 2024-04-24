@@ -1,18 +1,14 @@
-# 以 etherum sepolia 为 L1, 以 domicon 为 DA存储层 搭建 orbit anytrust chain
+# Building Orbit Anytrust Chain with Ethereum Sepolia as L1 and Domicon as DA Storage Layer
 
-## 环境准备
+## Environment Setup
 
-- host 配置，建议 `t2.xlarge`, `disk > 128GB`
+- Host Configuration: Recommended `t2.xlarge`&`disk > 128GB`
+- Ubuntu 22.04
+- Docker
+- Docker Compose
+- Node.js v18.20.1
 
-- ubuntu 22.04
-
-- docker
-
-- docker compose 
-
-- node v18.20.1
-
-## 代码准备
+## Code Preparation
 
 - nitro 
 
@@ -26,9 +22,9 @@ git clone --recurse-submodules https://github.com/domicon-labs/nitro.git
 git clone https://github.com/HONGYI-SD/arbitrum-orbit-sdk.git
 ```
 
-## 准备工作
+## Preparatory Work
 
-- deployer 账户, 充点钱进去 2 sepoia eth
+- Deployer Account: Fund with 2 Sepolia ETH
 
 ```txt
 addr:
@@ -37,7 +33,7 @@ privatekey:
     0xa7ec84c67598b8cf6a3dde9d0d2ff4274f8e242c36d53e1824e0ae830af9928c
 ```
 
-- Batch poster, 准备 1 sepolia eth
+- Batch Poster: Prepare 1 Sepolia ETH
 
 ```txt
 addr:
@@ -46,7 +42,7 @@ privatekey:
     0xccd7971bbef031c46932000dda77243359d217c73bc150f4b84594d753878a69
 ```
 
-- validator, 准备 1 sepolia eth
+- Validator, Prepare 1 sepolia eth
 
 ```txt
 addr:
@@ -55,7 +51,7 @@ privatekey:
     0xfa58f8005275254f89e1d10c82437eb9059d6957194e9df2ac33de746d684def
 ```
 
-- 多钱包地址, 给 第 0 个地址准备 1 sepolia eth
+- Multiple Wallet Addresses: Prepare 1 Sepolia ETH for the 0th address
 
 ```txt
 mnemonic:
@@ -65,15 +61,15 @@ addr:
     1: 0x53BEA5Eecca70Ab3DeBC9389963C46D5fb5Ec7CB
 ```
 
-## 准备 node-config.json
+## Prepare node-config.json
 
-找到刚才下载好的 `arbitrum-orbit-sdk`, 并进入 `examples` 目录
+Navigate to the `arbitrum-orbit-sdk` directory you just downloaded, and go into the `examples` directory.
 
-### 运行 `create-rollup-eth`
+### Run `create-rollup-eth`
 
-- 设置环境变量
+- Set environment variables
 
-```sh
+```sh 
 cp .env.example .env
 ```
 
@@ -87,18 +83,23 @@ BATCH_POSTER_PRIVATE_KEY=0xccd7971bbef031c46932000dda77243359d217c73bc150f4b8459
 VALIDATOR_PRIVATE_KEY=0xfa58f8005275254f89e1d10c82437eb9059d6957194e9df2ac33de746d684def
 ```
 
-- 检查 `index.ts` 中 dac 是否开启 `DataAvailabilityCommittee: true`
+- Check whether `dac` in `index.ts` is turned on `DataAvailabilityCommittee: true`
 
-- 执行 `yarn dev` , 得到 txhash
+- Run `yarn dev` to get the transaction hash
 
 ```txt
 Deployment transaction hash is 0xfdc29e52b3baf83a9bcd10ed05bc83a162f46bab4c14214feeadb21b7865e213
 ```
 
-### 运行 `prepare-node-config`
+### Run `prepare-node-config`
 
-- 设置环境变量
-`cp .env.example .env`，其中 `ORBIT_DEPLOYMENT_TRANSACTION_HASH` 为上一步的 `txhash`
+- Set environment variables
+
+```sh 
+cp .env.example .env
+```
+
+ where `ORBIT_DEPLOYMENT_TRANSACTION_HASH` is `txhash` of the previous step
 
 ```.env
 # Required
@@ -108,7 +109,7 @@ VALIDATOR_PRIVATE_KEY=0xfa58f8005275254f89e1d10c82437eb9059d6957194e9df2ac33de74
 
 ```
 
-- 执行 `yarn dev` 得到 `node-config.json`, 同时会在输出的日志中看到， 请记录下 `sequencerInbox` 和 `upgradeExecutor`, 在后续的操作中会用到他们：
+- Run `yarn dev` to get `node-config.json`, and record `sequencerInbox` and `upgradeExecutor` from the logs:
 
 ```json
 {
@@ -128,45 +129,46 @@ VALIDATOR_PRIVATE_KEY=0xfa58f8005275254f89e1d10c82437eb9059d6957194e9df2ac33de74
 }
 ```
 
-## 配置nitro相关
+## Configuring Nitro-related Settings
 
-- 找到代码 `nitro`
-- 进入 `nitro/nitro-testnode`
-- 打开scripts/config.js, 找到接口 `writeConfigs` 修改变量 `nodeConfig` 的值
+- Locate the `nitro` repo
+- Navigate to  `nitro/nitro-testnode`
+- Edit `scripts/config.js`, find the `writeConfigs` interface, and modify the value of `nodeConfig`
 
 ```go
-    // 将前面 node-config.json 的内容赋值给 nodeConfig 变量。
+    // Assign the content of the previous node-config.json to the nodeConfig variable.
     const nodeConfig = {
-        // 具体内容，省略展示 
+        // Specific content, omitted for brevity 
     }
+
 ```
 
-- 修改 `scripts/consts.ts` 中的 `l1mnemonic` 为上文新申请的多地址钱包的助记词，我的助记词为 `novel silent someone couch shock frame purse life rich large sibling crop`
+- Modify the `l1mnemonic` in `scripts/consts.ts` to the mnemonic of the newly applied multiple-address wallet mentioned earlier. My mnemonic is `novel silent someone couch shock frame purse life rich large sibling crop`.
 
-- 执行脚本 `./test-node.bash --init --dev`
+- Run the `script ./test-node.bash --init --dev`
 
-## 设置keyset信息
+## Setting Keyset Information
 
-- 找到下载的 `arbitrum-orbit-sdk` 并进入 `set-valid-keyset`，修改这两个地址
+- Find the downloaded `arbitrum-orbit-sdk` and go into `set-valid-keyset`, then modify these two addresses:
 
     ```ts
     upgradeExecutor: '0x2fa3f939799fBb4C25c89f0e200F8805C17BA4da',
     sequencerInbox: '0x2d6ec173b84145a079288d6DF7F85Caca78E198D',
     ```
 
-- 修改 环境变量
+- Modify the environment variable
 
 ```.env
 # Required
 DEPLOYER_PRIVATE_KEY=0xa7ec84c67598b8cf6a3dde9d0d2ff4274f8e242c36d53e1824e0ae830af9928c
 ```
 
-- 运行 `yarn dev`
+- Run `yarn dev`
 
-    执行该命令如果提示没有 DEPLOYER_PRIVATE_KEY 这个环境变量，可以先执行 `export DEPLOYER_PRIVATE_KEY=0xa7ec84c67598b8cf6a3dde9d0d2ff4274f8e242c36d53e1824e0ae830af9928c` ，然后在 `yarn dev`
+    If this command prompts that the `DEPLOYER_PRIVATE_KEY` environment variable is missing, you can first execute `export DEPLOYER_PRIVATE_KEY=0xa7ec84c67598b8cf6a3dde9d0d2ff4274f8e242c36d53e1824e0ae830af9928c`, then run `yarn dev`.
 
-## 其它
+## Others
 
-- 观察运行的容器 `docker ps`
+- Monitor running containers: `docker ps`
 
-- 查看相关日志 `docker logs `
+- View relevant logs: `docker logs `
