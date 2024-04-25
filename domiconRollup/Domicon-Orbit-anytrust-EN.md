@@ -19,7 +19,7 @@ git clone --recurse-submodules https://github.com/domicon-labs/nitro.git
 - arbitrum-orbit-sdk
 
 ```sh
-git clone https://github.com/HONGYI-SD/arbitrum-orbit-sdk.git
+git clone https://github.com/domicon-labs/arbitrum-orbit-sdk.git
 ```
 
 ## Preparatory Work
