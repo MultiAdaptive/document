@@ -10,7 +10,7 @@ All the solution is based on KZG polynomial commitment. A brief introduction to 
 
 Domicon nodes are classified into broadcast nodes and storage nodes. Broadcast nodes keep all data within seven days, and storage nodes keep only tenant data and store it for a long time based on order requirements.
 
-The user uses the KZG scheme to make a commitment to the data, store the commitment on Ethereum, and send both the data and commitment to Domicon nodes for broadcast and storage.
+The user uses the KZG scheme to commit to the data, store the commitment on Ethereum, and send both the data and commitment to Domicon nodes for broadcast and storage.
 
 The Ethereum solution consists of three major parts:
 
@@ -24,7 +24,7 @@ By pledging tokens, initiate voting for governance.
 
 A node stakes token to become a broadcast or storage node. The information to be registered includes the node URL, home location, and maximum storage space.
 
-The home location of the node can be modified by the governance contract.
+The governance contract can modify the home location of the node.
 
 3. **Storage Service Management Contract**
 
