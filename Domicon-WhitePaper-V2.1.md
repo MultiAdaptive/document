@@ -1,9 +1,7 @@
-<center><big>Domicon: Native Data Availability Solution for Multi-Chain
-<center><small>Domicon Tech Ltd.
-<center><small>contact@domicon.xyz
+# Domicon: Native Data Availability Solution for Multi-Chain
 Domicon is building a Data Availability 2.0 layer that provides native multi-chain support. 
 
-It consists of a broadcast layer responsible for data broadcasting and a storage layer responsible for long-term data storage. Domicon's ingenious utilization of the Kate-Zaverucha-Goldberg ( KZG ) polynomial commitment enables data broadcasting, data sampling and aggregate auditing of full data, truly ensuring the integrity and reliability of data in propagation and storage.
+It consists of a broadcast layer responsible for data broadcasting and a storage layer responsible for long-term data storage. Domicon's ingenious utilization of the Kate-Zaverucha-Goldberg ( KZG ) polynomial commitment enables data broadcasting, data sampling, and aggregate auditing of full data, truly ensuring the integrity and reliability of data in propagation and storage.
 
 # Abstract
 
@@ -35,7 +33,7 @@ Rollup, as the most favored scaling solution by users, not only provides faster 
 
 The key technical feature of Rollup involves executing transactions outside of Layer 1 and then submitting the user state roots to Layer 1 block-by-block, taking Layer 1's state root as the final state.
 
-ZK Rollup accompanies the submission of zero-knowledge proofs of state changes when submitting a new state, while Optimistic Rollup derives its security from fraud-proof: if a user detects an incorrect state transition, he/she can raise a challenge, which is adjudicated by the settlement layer i.e. Ethereum.
+ZK Rollup accompanies the submission of zero-knowledge proofs of state changes when submitting a new state. At the same time, Optimistic Rollup derives its security from fraud-proof. If a user detects an incorrect state transition, he/she can raise a challenge, which is adjudicated by the settlement layer i.e. Ethereum.
 
 Additionally, Rollup provides an emergency withdrawal function: when the Rollup project becomes inoperable, users can securely withdraw their funds by proving the ownership of their assets to the Layer 1 state root.
 
@@ -53,11 +51,11 @@ During the data broadcasting process, there may be risks of data loss or malicio
 
 A common solution is to use data sampling, employing erasure coding, to have a sufficient number of light nodes sampling the data. In this way, as long as some of the light nodes are honest, the data can be reconstructed. This approach not only alleviates the network burden caused by transmitting large volumes of data but also prevents nodes from doing evil. Even malicious nodes cannot reject all data adoption requests.
 
-Data broadcasting doesn't require nodes to store data for a long time, but only needs to ensure the success rate of propagating the data within a specified time frame.
+Data broadcasting doesn't require nodes to store data for a long time but only needs to ensure the success rate of propagating the data within a specified time frame.
 
 ## 1.2 Data Storage
 
-Currently, most blockchain projects store data on Ethereum, leveraging the security features the Ethereum network has already established, assuming it won't lose data during propagation and storage. However, this approach is both costly and limiting storage space if all Rollups choose Ethereum as the data storage layer. These constraints don't benefit the unlimited scalability of the Ethereum ecosystem.
+Currently, most blockchain projects store data on Ethereum, leveraging the security features the Ethereum network has already established, assuming it won't lose data during propagation and storage. However, this approach is both costly and limits storage space if all Rollups choose Ethereum as the data storage layer. These constraints don't benefit the unlimited scalability of the Ethereum ecosystem.
 
 Unlike general storage data, Rollup data is dynamically incremental. From a replay perspective, the loss of any data fragment renders the entire dataset invalid. Therefore, when storing this data, it's essential to ensure that the complete dataset is saved. This means that any probabilistic sampling audits become meaningless. Therefore, we need a succinct and deterministic new auditing solution for full data. 
 
@@ -73,11 +71,11 @@ The consensus layer of Domicon is a logical layer.
 
 The main function of the consensus layer is to determine what data should be broadcast and stored by Domicon. And punish dishonest nodes. Dishonest nodes include withholding data, not broadcasting data, not storing data, or tampering with data.
 
-In Domicon's design, the functionality of the consensus layer will be maximized in Layer1. For example, when Ethereum is Layer1, these functions can be implemented in smart contracts. But when bitcoin is Layer1, which data will be broadcast and stored will be recorded on Bitcoin, and the penalty of malicious nodes will be implemented in conjunction with the consensus between trusted nodes.
+In Domicon's design, the functionality of the consensus layer will be maximized in Layer 1. For example, when Ethereum is Layer 1, these functions can be implemented in smart contracts. But when Bitcoin is Layer 1, which data will be broadcast and stored will be recorded on Bitcoin, and the penalty of malicious nodes will be implemented in conjunction with the consensus between trusted nodes.
 
 ## Broadcast Layer
 
-The nodes in the broadcast layer will store all data for all projects for 14 days. Therefore, the data is organized according to the time of submission to domicon.
+The nodes in the broadcast layer will store all data for all projects for 14 days. Therefore, the data is organized according to the time of submission to Domicon.
 
 The broadcast node undertakes the two functions of receiving data and broadcasting data.
 
@@ -85,7 +83,7 @@ The project's data will first be submitted to the specified broadcast nodes, and
 
 After the data commitment is acknowledged in the consensus layer, the first broadcast nodes to receive the data will begin to broadcast the data to other broadcast nodes through the P2P network. They are also the first ones responsible for the data: if the majority of broadcast nodes, even with data sampling, cannot obtain the data, then they can initiate punitive measures against the first batch of broadcast nodes, such as slashing.
 
-On the other hand, if the broadcast node does not get the latest data, it will also receive a penalty, which is achieved through broadcast proof: Domicon system will spot check the data within 14 days, and if the broadcast node cannot give the corresponding proof, then he will be punished.
+On the other hand, if the broadcast node does not get the latest data, it will also receive a penalty, which is achieved through broadcast proof: Domicon system will spot-check the data within 14 days, and if the broadcast node cannot give the corresponding proof, then he will be punished.
 
 ## Storage Layer
 
@@ -95,31 +93,31 @@ These long-term stored data will receive an audit from the project, where the au
 
 # 3. Key Technologies
 
-All data stored to Domicon, is first encoded into a polynomial f(x), and the corresponding KZG commitment $cm$​ is generated. The commitment and polynomials are then uploaded to Domicon.
+All data stored to Domicon is first encoded into a polynomial f(x), and the corresponding KZG commitment $cm$​ is generated. The commitment and polynomials are then uploaded to Domicon.
 
 ## KZG Commitment
 
-The KZG commitment, named after its inventors Kate, Zaverucha, and Goldberg, is a form of cryptographic commitment scheme based on elliptic pairings and polynomial. KZG commitments allows one to commit to a polynomial without disclosing it, and later prove properties about the polynomial (such as its value at a certain point) without revealing the entire polynomial. 
+The KZG commitment, named after its inventors Kate, Zaverucha, and Goldberg, is a form of cryptographic commitment scheme based on elliptic pairings and polynomials. KZG commitments allow one to commit to a polynomial without disclosing it, and later prove properties about the polynomial (such as its value at a certain point) without revealing the entire polynomial. 
 
-You can get more infromation about KZG in the Appendix.
+You can get more information about KZG in the Appendix.
 
 ## Proof of Broadcast
 
-Domicon will sample check broadcast nodes to verify if they have retained data from the last 14 days.
+Domicon will sample-check broadcast nodes to verify if they have retained data from the last 14 days.
 
-The sampling is carried out by the Domicon committee, which randomly selects a storaged commitment and a random value $v$, and then submits them to the contract. The inspected broadcast node is required to submit the proof that the polynomial of the corresponding commitment was opened at $v$.
+The sampling is carried out by the Domicon committee, which randomly selects a storaged commitment and a random value $v$, and then submits them to the contract. The inspected broadcast node is required to submit proof that the polynomial of the corresponding commitment was opened at $v$.
 
 ## Data Audit
 
 ![img](images/aggregator.png)
 
-When each time the project submits data to Domicon, Domicon records the commitments $cm_i$ corresponding to each data submission and the corresponding polynomials $f_i(x)$. Assuming data has been submitted a total of $t$ times, when the project needs to initiate a full audit, they must generate $t$ random numbers $r_i$ and a random value $v$. The storage provider is then required to open the polynomial $F(x) = \sum r_i \cdot f_i(x)$ at the value $v$.
+When each time the project submits data to Domicon, Domicon records the commitments $cm_i$ corresponding to each data submission and the corresponding polynomials $f_i(x)$. Assuming data has been submitted a total of $t$ times when the project needs to initiate a full audit, they must generate $t$ random numbers $r_i$ and a random value $v$. The storage provider is then required to open the polynomial $F(x) = \sum r_i \cdot f_i(x)$ at the value $v$.
 
 To facilitate calculations, you can set $r_i = \text{Hash}(seed||i)$, where $seed$ is a seed selected by the project.
 
-The commitment corresponding to $F(x)$ is $CM = \sum r_i \cdot cm_i$. When the value of $t$ is large, it can be challenging to calculate this commitment within the contract. Therefore, an interactive challenge protocol is designed to ensure that the project and the storage provider can reach consensus on $CM$.
+The commitment corresponding to $F(x)$ is $CM = \sum r_i \cdot cm_i$. When the value of $t$ is large, it can be challenging to calculate this commitment within the contract. Therefore, an interactive challenge protocol is designed to ensure that the project and the storage provider can reach a consensus on $CM$.
 
-First, the project submits $CM_{0,t} = \sum_{i=0}^{t} r_i \cdot cm_i$. If the storage provider disagrees, the project submits $CM_{0,t/2}$ in an interactive binary manner, allowing both parties to find a pair ${CM_{i,j},CM_{i,j+1}}$ that they agree upon $CM_{i,j}$ but not on $CM_{i,j+1}$.
+First, the project submits $CM_{0,t} = \sum r_i \cdot cm_i$. If the storage provider disagrees, the project submits $CM_{0,t/2}$ in an interactive binary manner, allowing both parties to find a pair ${CM_{i,j}, CM_{i,j+1}}$ that they agree upon $CM_{i,j}$ but not on $CM_{i,j+1}$.
 
 At this point, the contract only needs to verify whether $CM_{i,j+1} = CM_{i,j} + r_{j+1} \cdot cm_{j+1}$. This determination can reveal who is being dishonest, leading to penalties.
 
@@ -147,27 +145,31 @@ On Ethereum, we can implement our consensus layer directly in the smart contract
 
 The user-submitted $cm$ will be stored in the contract and will be the sole basis for the Domicon node to broadcast or store the data.
 
-Mechanisms such as broadcast proof and data auditing will be implemented in the contract to ensure that domicon fully inherits the Ethereum consensus.
+Mechanisms such as broadcast proof and data auditing will be implemented in the contract to ensure that Domicon fully inherits the Ethereum consensus.
 
 ## Submit Commitment to Ethereum
 
-The Layer2 project $A_r$ first encodes and commits the data to obtain $\{data,cm\}$. Then it selects a set of broadcast node and requests to obtain the account address set $\{A_j\}$ of the node. Then the project signs the commitment and the accounts of both parties, and combine the $data$ to obtain
+The Layer2 project $A_r$ first encodes and commits the data to obtain $\{data, cm\}$. Then it selects a set of broadcast nodes and requests to obtain the account address set $\{A_j\}$ of the node. Then the project signs the commitment and the accounts of both parties and combines the $data$ to obtain
+
 $$
 CD=\{[[i,l,cm,\{A_j\},A_r],sign_{A_r}],data\}
 $$
+
 where $i$ represents the sequence number of stored data, and $l$ represents the size of $data$. 
 
 The project party sends the combined data $CD$ to the broadcast nodes.
 
-After receiving the combined data $CD$, the broadcast nodes first checks the legality of the signature $sign_{A_r}$, and then checks the legality of the commitment $l,cm,data$. Finally, the broadcast nodes $\{A_k\}$, where $\{A_k\}$ is a subset of $\{A_j\}$, uses its own private key to sign the message, and send back it to the project.
+After receiving the combined data $CD$, the broadcast nodes first check the legality of the signature $sign_{A_r}$, and then check the legality of the commitment $l, cm,data$. Finally, the broadcast nodes $\{A_k\}$, where $\{A_k\}$ is a subset of $\{A_j\}$, uses its own private key to sign the message and send back it to the project.
 
-Once the project receive enough signatures, it will create an Ethereum transaction and submit it to Ethereum,
+Once the project receives enough signatures, it will create an Ethereum transaction and submit it to Ethereum,
+
 $$
 tx([[i,l,cm,\{A_k\},A_r],\{sign_{A_k}\}])_{A_r}
 $$
-So the project's commitment and broadcast node's signature is sent to the storage contract deployed by Domicon on Ethereum. This means that the broadcast nodes $\{A_k\}$ have received the data from $A_r$ with commitment $cm$.
 
-If, the broadcast nodes read the $cm$ from Ethereum, they will broadcast the data to the P2P network.
+So the project's commitment and broadcast node's signature are sent to the storage contract deployed by Domicon on Ethereum. This means that the broadcast nodes $\{A_k\}$ have received the data from $A_r$ with commitment $cm$.
+
+If the broadcast nodes read the $cm$ from Ethereum, they will broadcast the data to the P2P network.
 
 When other broadcast nodes obtain the latest $cm$, they will check whether they have the corresponding $data$. If so, they will temporarily store it for 14 days. If not, they will obtain it from other nodes. If all data cannot be obtained from a single node, data sampling can be used to obtain data from multiple nodes and perform combined restoration.
 
@@ -185,7 +187,7 @@ When a node discovers a Commitment transaction that complies with Domicon rules 
 
 The reason we chose to use Avalanche is that we want to strengthen the security and decentralization of the Domicon network with the help of Avalanche's consensus, and we also require these nodes to stake BTC.
 
-Mechanisms such as broadcast proof and data audit will be implemented in the contract to ensure that domicon fully inherits the Ethereum consensus.
+Mechanisms such as broadcast proof and data audit will be implemented in the contract to ensure that Domicon fully inherits the Ethereum consensus.
 
 ## Submit Commitment to Bitcoin
 
@@ -197,13 +199,13 @@ A brief overview is as follows:
 2. The user sends the data and commitment to the selected Domicon node and requests the transfer NFT signature
 3. After the user collects enough signatures, the NFT is transferred back to the user
 
-This completes the submission of the commitment. It is worth noting that these two Bitcoin transactions can be submitted to miner in one go. These two transactions contain the signatures of the user and multiple broadcast nodes to ensure that the user's data has been received by these nodes.
+This completes the submission of the commitment. It is worth noting that these two Bitcoin transactions can be submitted to the miner in one go. These two transactions contain the signatures of the user and multiple broadcast nodes to ensure that the user's data has been received by these nodes.
 
 ![img](images/bitcoin.png)
 
 # 6. Conclusion
 
-This article explains in detail the importance of data availability for Layer2 security, and analyzes the two essential pillars for data availability: data publishing and data storage. Domicon pioneers a revolutionary decentralized network architecture, specifically tailored to empower Layer2 project teams with robust, cost-effective data availability solutions. For the Bitcoin and Ethereum ecosystems, Domicon has given detailed solutions that can provide native secure and efficient data availability services for layer2 projects in these ecosystems.
+This article explains in detail the importance of data availability for Layer2 security and analyzes the two essential pillars for data availability: data publishing and data storage. Domicon pioneers a revolutionary decentralized network architecture, specifically tailored to empower Layer2 project teams with robust, cost-effective data availability solutions. For the Bitcoin and Ethereum ecosystems, Domicon has given detailed solutions that can provide native secure and efficient data availability services for layer2 projects in these ecosystems.
 
 # Appendix: KZG commitment
 
@@ -226,13 +228,17 @@ where $i=0,1,2,...,k$. Here, k must be greater than the degree of the polynomial
 ## Commit
 
 The Prover holds a polynomial of degree n, denoted as f(x):
+
 $$
 f(x)=p_0+p_1x+p_2x^2+...+p_{n-1}x^{n-1}=\sum_{i=0}^{n-1} p_ix^i
 $$
+
 Using SRS.PK, the Prover can generate a commitment, denoted as Commitment:
+
 $$
 C=f(s)\cdot G_1=\sum_{i=0}^{n-1} p_i\cdot s^i\cdot G_1
 $$
+
 The Commitment is a point on the elliptic curve group G1, and its size is independent of n.
 
 ## Open
@@ -240,17 +246,23 @@ The Commitment is a point on the elliptic curve group G1, and its size is indepe
 If the Prover holds the correct polynomial, f(x), then for any given z, they can compute the correct f(z) = y and provide a proof.
 
 For the Prover, the calculation is as follows:
+
 $$
 f(z)=y
 $$
+
 There exists a polynomial:
+
 $$
 q(x) ={{f(x)-y}\over x-z}
 $$
+
 The Prover can generate a proof, denoted as $\pi$:
+
 $$
 \pi = q(s)\cdot G_1
 $$
+
 The Prover publicly reveals $y$ and $\pi$.
 
 The generated proof, $\pi$, is a point on the elliptic curve group G1, and its size is independent of n.
@@ -258,9 +270,11 @@ The generated proof, $\pi$, is a point on the elliptic curve group G1, and its s
 ## Verify
 
 Upon receiving the proof $\pi$, the Verifier can verify whether $y$ is indeed calculated from the polynomial $f(x)$:
+
 $$
 e(\pi ,s\cdot G_2-z\cdot G_2) = e(C-y\cdot G_1,G_2)
 $$
+
 If the above equation holds, the verification is successful.
 
 ## Batch Open and Verify
@@ -268,6 +282,7 @@ If the above equation holds, the verification is successful.
 KZG polynomial commitments also support opening and verifying batched data. This includes opening multiple points $z_i, i=1,..,t$ for a single polynomial and opening the same point $z$ for multiple polynomials.
 
 For opening multiple points $z_i, i=1,..,t$ for a single polynomial, you need to first calculate two t-degree polynomials, $l(x)$ and $h(x)$, such that:
+
 $$
 l(z_i)=f(z_i), i=1,..,t
 $$
