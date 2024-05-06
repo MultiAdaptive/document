@@ -21,7 +21,7 @@ Once users collect enough signatures, they send both transactions to the Bitcoin
 
 Previously, the submission of data commitments was completed. Other nodes in the Domicon network, upon detecting this data commitment in the Bitcoin network, would request the corresponding data in the P2P network. Simultaneously, the MNA-associated nodes ensure that the data is correctly broadcasted and stored in the P2P network.
 
-![image](/Users/songgeng/Project/domicon/document/images/bitcoin.png)
+![image](images/bitcoin.png)
 
 **Differences compared with Nubit:**
 
