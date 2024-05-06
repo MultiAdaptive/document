@@ -1,4 +1,5 @@
 # Domicon: Native Data Availability Solution for Multi-Chain
+
 Domicon is building a Data Availability 2.0 layer that provides native multi-chain support. 
 
 It consists of a broadcast layer responsible for data broadcasting and a storage layer responsible for long-term data storage. Domicon's ingenious utilization of the Kate-Zaverucha-Goldberg ( KZG ) polynomial commitment enables data broadcasting, data sampling, and aggregate auditing of full data, truly ensuring the integrity and reliability of data in propagation and storage.
