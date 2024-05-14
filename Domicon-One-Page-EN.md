@@ -49,6 +49,8 @@ Data auditing refers to users performing batch audits of historical data after m
 
 The above plans require a consensus network to complete. Bitcoin has the strongest consensus network, but currently, its script computing power is limited and cannot execute such complex algorithms. Thus, Domicon uses a subnet network to borrow Avalanche consensus to penalize malicious nodes. Domicon will implement the above algorithms in the subnet.
 
+![image](images/subnet.png)
+
 Additionally, Domicon requires the subnet to be composed of nodes that have staked BTC.
 
 **Differences compared with Nubit:**
